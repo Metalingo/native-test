@@ -1,0 +1,25 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/SpoqaHanSansNeo-Bold.ttf",
+      "sha1": "a05ccbf2084a50ca4ccc452999bdea73dd4a945b"
+    },
+    {
+      "path": "assets/fonts/SpoqaHanSansNeo-Light.ttf",
+      "sha1": "cef63f699a26063abcb83335c1fd5f1f32707437"
+    },
+    {
+      "path": "assets/fonts/SpoqaHanSansNeo-Medium.ttf",
+      "sha1": "c933a225078de2249fdc07537ae8b24d8dbb8fac"
+    },
+    {
+      "path": "assets/fonts/SpoqaHanSansNeo-Regular.ttf",
+      "sha1": "af5569148dff2df6afe70ecd1948b649bd908eb9"
+    },
+    {
+      "path": "assets/fonts/SpoqaHanSansNeo-Thin.ttf",
+      "sha1": "3b0b062c9d35d058fe569dc5ad01dedb68a50255"
+    }
+  ]
+}
