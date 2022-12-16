@@ -39,7 +39,6 @@
 		"react-native-screens": "^3.18.2",
 		"react-native-sound": "^0.11.2",
 		"react-native-svg": "^13.5.0",
-		"react-native-swiper": "https://github.com/leecade/react-native-swiper#5827a80002738abd1c0dc08428303c79bbc840c0",
 		"tinycolor2": "^1.4.2",
 		"zod": "^3.19.1"
 	},

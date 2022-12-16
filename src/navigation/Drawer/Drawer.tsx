@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native'
 
 export type DrawerParamList = {
 	Home: undefined
-	Profile: undefined
 }
 
 const Drawer = createDrawerNavigator<DrawerParamList>()
