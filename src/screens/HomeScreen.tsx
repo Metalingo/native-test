@@ -8,7 +8,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native'
-import Svg, { Circle, Path } from 'react-native-svg'
+import Svg, { Circle } from 'react-native-svg'
 
 import { STATUS, SwipeablePanel } from '@app/components/SwipeablePanel'
 
@@ -45,7 +45,7 @@ const HomeScreen: React.FC = () => {
 		if (status == 2) {
 			setPanelStatus(status)
 			Animated.timing(opacityAnim, {
-				toValue: 0.6,
+				toValue: 1,
 				duration: 700,
 				useNativeDriver: false,
 			}).start()
@@ -64,7 +64,7 @@ const HomeScreen: React.FC = () => {
 			}).start()
 
 			Animated.timing(heightAnim, {
-				toValue: minimizedHeight * 0.18,
+				toValue: minimizedHeight * 0.15,
 				duration: 700,
 				easing: Easing.linear,
 				useNativeDriver: false,
@@ -112,6 +112,8 @@ const HomeScreen: React.FC = () => {
 			unit: '일',
 		},
 	]
+	const circleCenter = { x: 60, y: 50 }
+	const statWidth = 46
 	return (
 		<View
 			style={css`
@@ -125,41 +127,45 @@ const HomeScreen: React.FC = () => {
 						css`
 							//padding: 24px;
 							padding-bottom: 50px;
-							padding-top: 30px;
+							//padding-top: 30px;
 							flex-direction: column;
 						`,
-						{ height: panelHeight },
+						{
+							height: panelHeight,
+						},
 					]}
 				>
-					{panelStatus === 2 ? (
-						<Animated.View style={{ opacity: opacityAnim, marginBottom: 40 }}>
-							<Text
-								style={css`
-									font-size: 18px;
-									font-weight: bold;
-									text-align: center;
-								`}
-							>
-								이번 주에 4일 연속으로 접속하셨어요.
-							</Text>
-							<Text
-								style={css`
-									font-size: 18px;
-									font-weight: bold;
-									margin-top: 10px;
-									text-align: center;
-								`}
-							>
-								14분 더 대화하시면 오늘 목표가 달성돼요!.
-							</Text>
-						</Animated.View>
-					) : (
-						<></>
-					)}
+					<Animated.View
+						style={{
+							opacity: opacityAnim,
+							flex: 0.15,
+							paddingTop: 30,
+						}}
+					>
+						<Text
+							style={css`
+								font-size: 18px;
+								font-weight: bold;
+								text-align: center;
+								line-height: 36px;
+							`}
+						>
+							이번 주에 4일 연속으로 접속하셨어요.
+						</Text>
+						<Text
+							style={css`
+								font-size: 18px;
+								font-weight: bold;
+								text-align: center;
+							`}
+						>
+							14분 더 대화하시면 오늘 목표가 달성돼요!
+						</Text>
+					</Animated.View>
 
 					<Animated.View
 						style={{
-							flex: 1,
+							flex: 0.3,
 							display: 'flex',
 							flexDirection: 'row',
 							maxHeight: heightAnim,
@@ -179,11 +185,11 @@ const HomeScreen: React.FC = () => {
 										key={title}
 										style={[
 											css`
-												width: 45px;
 												border-radius: 10px;
 												margin-right: 1px;
 											`,
 											{
+												width: statWidth,
 												borderWidth: 1,
 												borderColor: isCompleted ? '#61e294' : '#b5b5b5',
 												backgroundColor: isCompleted ? '#61e294' : '#fff',
@@ -193,9 +199,10 @@ const HomeScreen: React.FC = () => {
 										<>
 											{isCurrentDay && (
 												<>
-													<View
+													<Animated.View
 														style={{
 															backgroundColor: '#f25757',
+															opacity: opacityAnim,
 															width: 10,
 															height: 10,
 															position: 'absolute',
@@ -204,15 +211,17 @@ const HomeScreen: React.FC = () => {
 															right: -5,
 														}}
 													/>
-													<View
+
+													<Animated.View
 														style={{
 															position: 'absolute',
 															backgroundColor: '#b1f0c9',
-															height:
+															height: Number(
 																(data.todayMinutes / userData.targetMinutes) *
-																0.18 *
-																panelHeight,
-															width: 43,
+																	0.15 *
+																	panelHeight,
+															),
+															width: statWidth - 2,
 															bottom: 0,
 															borderBottomRightRadius: 10,
 															borderBottomLeftRadius: 10,
@@ -226,7 +235,6 @@ const HomeScreen: React.FC = () => {
 														font-size: 18px;
 														font-weight: bold;
 														text-align: center;
-														padding-top: 10px;
 													`,
 													{ paddingTop: 0.08 * panelHeight },
 												]}
@@ -239,127 +247,126 @@ const HomeScreen: React.FC = () => {
 							},
 						)}
 					</Animated.View>
+
 					<View
 						style={{
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							paddingHorizontal: 24,
-							paddingTop: 30,
-						}}
-					>
-						{stats.map(
-							(stat: {
-								title: string
-								numerator: number
-								denominator: number
-								unit: string
-							}) => {
-								const { title, numerator, denominator, unit } = stat
-								const percentage = numerator / denominator
-								const radius = 40
-								const circumference = radius * 2 * Math.PI
-								const progress = circumference - percentage * circumference
-								return (
-									<View
-										style={{
-											paddingHorizontal: 2,
-										}}
-										key={title}
-									>
-										<Text style={{ textAlign: 'center', fontSize: 16 }}>
-											{title}
-										</Text>
-
-										<Svg
-											fill="transparent"
-											style={[
-												css`
-													width: 100px;
-													height: 100px;
-													transform: rotate(-90deg); /* Fix the orientation */
-												`,
-											]}
-										>
-											<Circle
-												cx={50}
-												cy={50}
-												r={radius}
-												strokeLinecap="round"
-												stroke="#e3e3e3"
-												strokeWidth={5}
-												fill="transparent"
-												strokeDashoffset={progress}
-											/>
-											<Circle
-												cx={50}
-												cy={50}
-												r={radius}
-												strokeLinecap="round"
-												stroke="#61e294"
-												strokeWidth={5}
-												fill="transparent"
-												strokeDasharray={circumference}
-												strokeDashoffset={progress}
-											/>
-										</Svg>
-
-										<View
-											style={{
-												display: 'flex',
-												flexDirection: 'row',
-												alignItems: 'center',
-												position: 'absolute',
-												alignSelf: 'center',
-												top: 55,
-											}}
-										>
-											<Text
-												style={{
-													fontWeight: 'bold',
-													fontSize: 20,
-												}}
-											>
-												{numerator}
-											</Text>
-											<Text style={{ marginTop: 3 }}>
-												/{denominator}
-												{unit}
-											</Text>
-										</View>
-									</View>
-								)
-							},
-						)}
-					</View>
-
-					<TouchableOpacity
-						style={{
-							position: 'absolute',
-							top: panelHeight * 0.7,
-							width: '100%',
+							flex: 0.4,
 						}}
 					>
 						<View
 							style={{
-								backgroundColor: '#61e294',
-								alignSelf: 'center',
-								borderRadius: 10,
-								paddingVertical: 16,
-								paddingHorizontal: (panelWidth / 2) * 0.7,
+								display: 'flex',
+								flexDirection: 'row',
+								justifyContent: 'space-between',
+								padding: 24,
 							}}
 						>
-							<Text
+							{stats.map(
+								(stat: {
+									title: string
+									numerator: number
+									denominator: number
+									unit: string
+								}) => {
+									const { title, numerator, denominator, unit } = stat
+									const percentage = numerator / denominator
+									const radius = 34
+									const circumference = radius * 2 * Math.PI
+									const progress = circumference - percentage * circumference
+									return (
+										<View key={title}>
+											<Text style={{ textAlign: 'center', fontSize: 16 }}>
+												{title}
+											</Text>
+
+											<Svg
+												fill="transparent"
+												style={[
+													css`
+														width: 100px;
+														height: 100px;
+														transform: rotate(-90deg); /* Fix the orientation */
+													`,
+												]}
+											>
+												<Circle
+													cx={circleCenter.x}
+													cy={circleCenter.y}
+													r={radius}
+													strokeLinecap="round"
+													stroke="#e3e3e3"
+													strokeWidth={4}
+													fill="transparent"
+													strokeDashoffset={progress}
+												/>
+												<Circle
+													cx={circleCenter.x}
+													cy={circleCenter.y}
+													r={radius}
+													strokeLinecap="round"
+													stroke="#61e294"
+													strokeWidth={4}
+													fill="transparent"
+													strokeDasharray={circumference}
+													strokeDashoffset={progress}
+												/>
+											</Svg>
+
+											<View
+												style={{
+													display: 'flex',
+													flexDirection: 'row',
+													alignItems: 'center',
+													position: 'absolute',
+													alignSelf: 'center',
+													top: circleCenter.y,
+												}}
+											>
+												<Text
+													style={{
+														fontWeight: 'bold',
+														fontSize: 16,
+													}}
+												>
+													{numerator}
+												</Text>
+												<Text style={{ marginTop: 3, fontSize: 12 }}>
+													/{denominator}
+													{unit}
+												</Text>
+											</View>
+										</View>
+									)
+								},
+							)}
+						</View>
+						<TouchableOpacity
+							style={{
+								width: '100%',
+								paddingTop: 30,
+							}}
+						>
+							<View
 								style={{
-									textAlign: 'center',
-									fontSize: 21,
-									fontWeight: 'bold',
+									backgroundColor: '#61e294',
+									alignSelf: 'center',
+									borderRadius: 10,
+									paddingVertical: 16,
+									paddingHorizontal: (panelWidth / 2) * 0.7,
 								}}
 							>
-								시작하기
-							</Text>
-						</View>
-					</TouchableOpacity>
+								<Text
+									style={{
+										textAlign: 'center',
+										fontSize: 21,
+										fontWeight: 'bold',
+									}}
+								>
+									시작하기
+								</Text>
+							</View>
+						</TouchableOpacity>
+					</View>
 
 					{/*<View*/}
 					{/*	style={[*/}
