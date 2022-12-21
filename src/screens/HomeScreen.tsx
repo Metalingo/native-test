@@ -59,10 +59,15 @@ const HomeScreen: React.FC = () => {
 	]
 
 	const minimizedHeight = Dimensions.get('window').height * 0.35
+	// opacityAnim used to fade in and out the text
 	const opacityAnim = useRef(new Animated.Value(0.5)).current
+	// heightAnim used to animate the height of the stats
 	const heightAnim = useRef(new Animated.Value(0)).current
+	// translateAnim used to translate the stats and the button
 	const translateAnim = useRef(new Animated.Value(0)).current
+	// textTranslateAnim used to animate the movement of the text
 	const textTranslateAnim = useRef(new Animated.Value(0)).current
+	// statPercentageAnim used to animate the statistic percentage
 	const statPercentageAnim = useRef(new Animated.Value(0)).current
 
 	const [panelProps, setPanelProps] = useState({
@@ -172,14 +177,9 @@ const HomeScreen: React.FC = () => {
 			<SwipeablePanel {...panelProps} isActive={isPanelActive}>
 				<View
 					style={[
-						css`
-							//padding: 24px;
-							//padding-bottom: 50px;
-							//padding-top: 30px;
-							flex-direction: column;
-						`,
 						{
 							height: panelHeight,
+							flexDirection: 'column',
 						},
 					]}
 				>
@@ -401,6 +401,7 @@ const HomeScreen: React.FC = () => {
 							</View>
 						)}
 
+						{/*Button: can be made into a component later*/}
 						<TouchableOpacity
 							style={{
 								width: '100%',
@@ -429,23 +430,6 @@ const HomeScreen: React.FC = () => {
 							</Animated.View>
 						</TouchableOpacity>
 					</View>
-
-					{/*<View*/}
-					{/*	style={[*/}
-					{/*		css`*/}
-					{/*			//flex: 0.3;*/}
-					{/*			flex: 1;*/}
-					{/*			flex-direction: row;*/}
-					{/*			display: flex;*/}
-					{/*			//justify-content: flex-end;*/}
-					{/*			//justify-content: flex-start;*/}
-					{/*			//background-color: red;*/}
-					{/*		`,*/}
-					{/*	]}*/}
-					{/*>*/}
-					{/*	/!*<MBText>{JSON.stringify(greetings.data)}</MBText> *!/*/}
-					{/*	/!* Enter statistics *!/*/}
-					{/*</View>*/}
 				</View>
 			</SwipeablePanel>
 		</View>
