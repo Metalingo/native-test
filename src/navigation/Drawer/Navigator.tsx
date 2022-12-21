@@ -3,6 +3,7 @@ import { useWindowDimensions } from 'react-native'
 import HomeScreen from '@app/screens/HomeScreen'
 
 import Drawer from './Drawer'
+import React from 'react'
 
 const DrawerNavigator: React.FC = () => {
 	const { width: screenWidth } = useWindowDimensions()
