@@ -17,61 +17,6 @@ const HomeScreen: React.FC = () => {
 	const panelHeight = Dimensions.get('window').height * 0.8
 	const panelWidth = Dimensions.get('window').width
 
-	const minimizedHeight = Dimensions.get('window').height * 0.35
-	const opacityAnim = useRef(new Animated.Value(0.5)).current
-	const heightAnim = useRef(new Animated.Value(0)).current
-
-	const [panelProps, setPanelProps] = useState({
-		fullWidth: true,
-		openLarge: true,
-		canClose: false,
-		canScroll: false,
-		orientation: 'portrait',
-		showCloseButton: false,
-		largePanelHeight: panelHeight,
-		smallPanelHeight: minimizedHeight,
-		bigBackgroundOpacity: 0.0,
-		smallBackgroundOpacity: 0.0,
-		onChangeStatus: (status: STATUS) => changedStatus(status),
-		statusChangeDone: (status: STATUS) => statusChangeDone(status),
-	})
-
-	const [isPanelActive, setIsPanelActive] = useState(true)
-
-	const statusChangeDone = (status: STATUS) => {
-		setPanelStatus(status)
-	}
-	const changedStatus = (status: STATUS) => {
-		if (status == 2) {
-			setPanelStatus(status)
-			Animated.timing(opacityAnim, {
-				toValue: 1,
-				duration: 700,
-				useNativeDriver: false,
-			}).start()
-
-			Animated.timing(heightAnim, {
-				toValue: panelHeight * 0.18,
-				duration: 700,
-				easing: Easing.linear,
-				useNativeDriver: false,
-			}).start()
-		} else {
-			Animated.timing(opacityAnim, {
-				toValue: 0.0,
-				duration: 700,
-				useNativeDriver: false,
-			}).start()
-
-			Animated.timing(heightAnim, {
-				toValue: minimizedHeight * 0.15,
-				duration: 700,
-				easing: Easing.linear,
-				useNativeDriver: false,
-			}).start()
-		}
-	}
-
 	// static data to build front-end UI
 	const userData = {
 		targetMinutes: 20,
@@ -112,6 +57,109 @@ const HomeScreen: React.FC = () => {
 			unit: '일',
 		},
 	]
+
+	const minimizedHeight = Dimensions.get('window').height * 0.35
+	const opacityAnim = useRef(new Animated.Value(0.5)).current
+	const heightAnim = useRef(new Animated.Value(0)).current
+	const translateAnim = useRef(new Animated.Value(0)).current
+	const textTranslateAnim = useRef(new Animated.Value(0)).current
+	const statPercentageAnim = useRef(new Animated.Value(0)).current
+
+	const [panelProps, setPanelProps] = useState({
+		fullWidth: true,
+		openLarge: true,
+		canClose: false,
+		canScroll: false,
+		orientation: 'portrait',
+		showCloseButton: false,
+		largePanelHeight: panelHeight,
+		smallPanelHeight: minimizedHeight,
+		bigBackgroundOpacity: 0.0,
+		smallBackgroundOpacity: 0.0,
+		onChangeStatus: (status: STATUS) => changedStatus(status),
+		statusChangeDone: (status: STATUS) => statusChangeDone(status),
+	})
+
+	const [isPanelActive, setIsPanelActive] = useState(true)
+
+	const statusChangeDone = (status: STATUS) => {
+		setPanelStatus(status)
+	}
+	const changedStatus = (status: STATUS) => {
+		if (status == 2) {
+			setPanelStatus(status)
+			Animated.timing(opacityAnim, {
+				toValue: 1,
+				duration: 700,
+				useNativeDriver: false,
+			}).start()
+
+			Animated.timing(heightAnim, {
+				toValue: panelHeight * 0.18,
+				duration: 700,
+				easing: Easing.linear,
+				useNativeDriver: false,
+			}).start()
+
+			Animated.timing(translateAnim, {
+				toValue: 0,
+				duration: 700,
+				easing: Easing.linear,
+				useNativeDriver: false,
+			}).start()
+
+			Animated.timing(textTranslateAnim, {
+				toValue: 0,
+				duration: 700,
+				easing: Easing.linear,
+				useNativeDriver: false,
+			}).start()
+
+			Animated.timing(statPercentageAnim, {
+				toValue:
+					(data.todayMinutes / userData.targetMinutes) * 0.15 * panelHeight,
+				duration: 700,
+				easing: Easing.linear,
+				useNativeDriver: false,
+			}).start()
+		} else {
+			Animated.timing(opacityAnim, {
+				toValue: 0.0,
+				duration: 700,
+				useNativeDriver: false,
+			}).start()
+
+			Animated.timing(heightAnim, {
+				toValue: minimizedHeight * 0.15,
+				duration: 700,
+				easing: Easing.linear,
+				useNativeDriver: false,
+			}).start()
+
+			Animated.timing(translateAnim, {
+				toValue: -panelHeight * 0.15 - 50,
+				duration: 700,
+				easing: Easing.linear,
+				useNativeDriver: false,
+			}).start()
+
+			Animated.timing(textTranslateAnim, {
+				toValue: -minimizedHeight * 0.15,
+				duration: 700,
+				easing: Easing.linear,
+				useNativeDriver: false,
+			}).start()
+
+			Animated.timing(statPercentageAnim, {
+				toValue:
+					(data.todayMinutes / userData.targetMinutes) * 0.15 * minimizedHeight,
+				duration: 700,
+				easing: Easing.linear,
+				useNativeDriver: false,
+			}).start()
+		}
+	}
+
 	const circleCenter = { x: 60, y: 50 }
 	const statWidth = 46
 	return (
@@ -126,7 +174,7 @@ const HomeScreen: React.FC = () => {
 					style={[
 						css`
 							//padding: 24px;
-							padding-bottom: 50px;
+							//padding-bottom: 50px;
 							//padding-top: 30px;
 							flex-direction: column;
 						`,
@@ -169,6 +217,7 @@ const HomeScreen: React.FC = () => {
 							display: 'flex',
 							flexDirection: 'row',
 							maxHeight: heightAnim,
+							transform: [{ translateY: translateAnim }],
 							justifyContent: 'space-between',
 							paddingHorizontal: 11,
 						}}
@@ -216,11 +265,7 @@ const HomeScreen: React.FC = () => {
 														style={{
 															position: 'absolute',
 															backgroundColor: '#b1f0c9',
-															height: Number(
-																(data.todayMinutes / userData.targetMinutes) *
-																	0.15 *
-																	panelHeight,
-															),
+															height: statPercentageAnim,
 															width: statWidth - 2,
 															bottom: 0,
 															borderBottomRightRadius: 10,
@@ -229,18 +274,27 @@ const HomeScreen: React.FC = () => {
 													/>
 												</>
 											)}
-											<Text
+											<Animated.Text
 												style={[
 													css`
 														font-size: 18px;
 														font-weight: bold;
 														text-align: center;
+														z-index: 100000;
 													`,
-													{ paddingTop: 0.08 * panelHeight },
+													{
+														position: 'absolute',
+														paddingLeft: statWidth * 0.27,
+														paddingTop:
+															panelStatus === 2
+																? 0.08 * panelHeight
+																: 0.19 * minimizedHeight,
+														transform: [{ translateY: textTranslateAnim }],
+													},
 												]}
 											>
 												{title}
-											</Text>
+											</Animated.Text>
 										</>
 									</View>
 								)
@@ -253,106 +307,114 @@ const HomeScreen: React.FC = () => {
 							flex: 0.4,
 						}}
 					>
-						<View
-							style={{
-								display: 'flex',
-								flexDirection: 'row',
-								justifyContent: 'space-between',
-								padding: 24,
-							}}
-						>
-							{stats.map(
-								(stat: {
-									title: string
-									numerator: number
-									denominator: number
-									unit: string
-								}) => {
-									const { title, numerator, denominator, unit } = stat
-									const percentage = numerator / denominator
-									const radius = 34
-									const circumference = radius * 2 * Math.PI
-									const progress = circumference - percentage * circumference
-									return (
-										<View key={title}>
-											<Text style={{ textAlign: 'center', fontSize: 16 }}>
-												{title}
-											</Text>
+						{panelStatus === 2 && (
+							<View
+								style={[
+									{
+										flexDirection: 'row',
+										justifyContent: 'space-between',
+										paddingTop: 30,
+										paddingHorizontal: 24,
+									},
+								]}
+							>
+								{stats.map(
+									(stat: {
+										title: string
+										numerator: number
+										denominator: number
+										unit: string
+									}) => {
+										const { title, numerator, denominator, unit } = stat
+										const percentage = numerator / denominator
+										const radius = 34
+										const circumference = radius * 2 * Math.PI
+										const progress = circumference - percentage * circumference
+										return (
+											<View key={title}>
+												<Text style={{ textAlign: 'center', fontSize: 16 }}>
+													{title}
+												</Text>
 
-											<Svg
-												fill="transparent"
-												style={[
-													css`
-														width: 100px;
-														height: 100px;
-														transform: rotate(-90deg); /* Fix the orientation */
-													`,
-												]}
-											>
-												<Circle
-													cx={circleCenter.x}
-													cy={circleCenter.y}
-													r={radius}
-													strokeLinecap="round"
-													stroke="#e3e3e3"
-													strokeWidth={4}
+												<Svg
 													fill="transparent"
-													strokeDashoffset={progress}
-												/>
-												<Circle
-													cx={circleCenter.x}
-													cy={circleCenter.y}
-													r={radius}
-													strokeLinecap="round"
-													stroke="#61e294"
-													strokeWidth={4}
-													fill="transparent"
-													strokeDasharray={circumference}
-													strokeDashoffset={progress}
-												/>
-											</Svg>
+													style={[
+														css`
+															width: 100px;
+															height: 100px;
+														`,
+														{
+															transform: [{ rotate: '-90deg' }],
+														},
+													]}
+												>
+													<Circle
+														cx={circleCenter.x}
+														cy={circleCenter.y}
+														r={radius}
+														strokeLinecap="round"
+														stroke="#e3e3e3"
+														strokeWidth={4}
+														fill="transparent"
+														strokeDashoffset={progress}
+													/>
+													<Circle
+														cx={circleCenter.x}
+														cy={circleCenter.y}
+														r={radius}
+														strokeLinecap="round"
+														stroke="#61e294"
+														strokeWidth={4}
+														fill="transparent"
+														strokeDasharray={circumference}
+														strokeDashoffset={progress}
+													/>
+												</Svg>
 
-											<View
-												style={{
-													display: 'flex',
-													flexDirection: 'row',
-													alignItems: 'center',
-													position: 'absolute',
-													alignSelf: 'center',
-													top: circleCenter.y,
-												}}
-											>
-												<Text
+												<View
 													style={{
-														fontWeight: 'bold',
-														fontSize: 16,
+														display: 'flex',
+														flexDirection: 'row',
+														alignItems: 'center',
+														position: 'absolute',
+														alignSelf: 'center',
+														top: circleCenter.y,
 													}}
 												>
-													{numerator}
-												</Text>
-												<Text style={{ marginTop: 3, fontSize: 12 }}>
-													/{denominator}
-													{unit}
-												</Text>
+													<Text
+														style={{
+															fontWeight: 'bold',
+															fontSize: 16,
+														}}
+													>
+														{numerator}
+													</Text>
+													<Text style={{ marginTop: 3, fontSize: 12 }}>
+														/{denominator}
+														{unit}
+													</Text>
+												</View>
 											</View>
-										</View>
-									)
-								},
-							)}
-						</View>
+										)
+									},
+								)}
+							</View>
+						)}
+
 						<TouchableOpacity
 							style={{
 								width: '100%',
-								paddingTop: 30,
+								paddingTop: 40,
 							}}
 						>
-							<View
+							<Animated.View
 								style={{
 									backgroundColor: '#61e294',
 									alignSelf: 'center',
 									borderRadius: 10,
-									paddingVertical: 16,
+									paddingVertical: 20,
 									paddingHorizontal: (panelWidth / 2) * 0.7,
+									transform: [{ translateY: translateAnim }],
 								}}
 							>
 								<Text
@@ -364,7 +426,7 @@ const HomeScreen: React.FC = () => {
 								>
 									시작하기
 								</Text>
-							</View>
+							</Animated.View>
 						</TouchableOpacity>
 					</View>
 
